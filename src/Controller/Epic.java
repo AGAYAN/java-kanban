@@ -17,6 +17,7 @@ public class Epic extends Task{
     public void setIdSubTasks(ArrayList<Integer> idSubTasks) {
         this.idSubTasks = idSubTasks;
     }
+
     @Override
     public String toString () {
         return "Epic{" +

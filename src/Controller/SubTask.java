@@ -1,10 +1,12 @@
 package Controller;
 
+import java.util.Objects;
+
 public class SubTask extends Task {
     private int id;
 
-    public SubTask(String newtitle, String newDescription){
-        super(newtitle, newDescription);
+    public SubTask(String newTitle, String newDescription) {
+        super(newTitle, newDescription);
     }
 
     @Override
@@ -17,14 +19,14 @@ public class SubTask extends Task {
         this.id = id;
     }
 
+
     @Override
     public String toString() {
-        return "Subtask{" +
-                "idSubtask=" + id +
-                ", name='" + getTitle() + '\'' +
+        return "SubTask{" +
+                "id=" + id +
+                ", title='" + getTitle() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
                 '}';
     }
-
 }
