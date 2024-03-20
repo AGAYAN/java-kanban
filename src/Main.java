@@ -15,7 +15,8 @@ public class Main {
 
         SubTask subtask = new SubTask("Встать в 9 утра","Пойти в WAY11");
         taskManager.createNewSubTask(subtask);
-        subtask.setStatus(TaskStatus.IN_PROGRESS);
+        subtask.setStatus(TaskStatus.IN_PROGRESS);push
+                
 
         Epic epic = new Epic("Встать в 10 утра", "Пойти в WAY11");
         taskManager.createNewEpic(epic);
