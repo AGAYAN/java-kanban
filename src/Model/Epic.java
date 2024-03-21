@@ -1,21 +1,20 @@
-package Controller;
+package Model;
 
 import java.util.ArrayList;
 
 public class Epic extends Task{
-    private ArrayList<Integer> idSubTasks;
+    private ArrayList<Integer> subTaskUds;
 
-    public Epic(String newName, String newDescription){
-        super(newName, newDescription);
-        idSubTasks = new ArrayList<>();
+    public Epic(String newName, String newDescription, TaskStatus status, int id) {
+        super(newName, newDescription, status, id);
     }
 
     public ArrayList<Integer> getIdSubTasks() {
-        return idSubTasks;
+        return subTaskUds;
     }
 
     public void setIdSubTasks(ArrayList<Integer> idSubTasks) {
-        this.idSubTasks = idSubTasks;
+        this.subTaskUds = idSubTasks;
     }
 
     @Override

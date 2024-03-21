@@ -1,9 +1,7 @@
-package Controller;
-
-import java.util.Objects;
+package Model;
 
 public class SubTask extends Task {
-    private int id;
+    private int epicId;
 
     public SubTask(String newTitle, String newDescription) {
         super(newTitle, newDescription);
@@ -18,7 +16,6 @@ public class SubTask extends Task {
     public void setId(int id) {
         this.id = id;
     }
-
 
     @Override
     public String toString() {
