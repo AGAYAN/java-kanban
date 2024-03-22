@@ -1,20 +1,18 @@
-package Model;
+package com.yandex.practicum.Models;
 
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String newTitle, String newDescription) {
-        super(newTitle, newDescription);
+    public SubTask(String newTitle, String newDescription, TaskStatus newStatus, int id) {
+        super(newTitle, newDescription, newStatus, id);
     }
 
-    @Override
-    public int getId() {
-        return id;
+    public int getEpicId() {
+        return epicId;
     }
 
-    @Override
-    public void setId(int id) {
-        this.id = id;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     @Override

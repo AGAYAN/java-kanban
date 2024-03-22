@@ -1,8 +1,8 @@
-import Model.Epic;
-import Model.SubTask;
-import Model.TaskStatus;
-import Model.Task;
-import Service.TaskManager;
+import com.yandex.practicum.Models.Epic;
+import com.yandex.practicum.Models.SubTask;
+import com.yandex.practicum.Models.TaskStatus;
+import com.yandex.practicum.Models.Task;
+import com.yandex.practicum.Service.TaskManager;
 
 public class Main {
 
@@ -14,8 +14,8 @@ public class Main {
         taskManager.createNewTask(task);
         taskManager.createNewTask(task1);
 
-        SubTask subtask = new SubTask("Встать в 9 утра","Пойти в WAY11");
-        SubTask subTaskUpDate = new SubTask("Поставить будильник в 9 утра", "Пойти покушать");
+        SubTask subtask = new SubTask("Встать в 9 утра","Пойти в WAY11", TaskStatus.NEW, 1);
+        SubTask subTaskUpDate = new SubTask("Поставить будильник в 9 утра", "Пойти покушать", TaskStatus.DONE, 3);
         taskManager.createNewSubTask(subtask);
         subtask.setStatus(TaskStatus.IN_PROGRESS);
 
@@ -23,28 +23,22 @@ public class Main {
         Epic epicUpDate = new Epic("Встать в 12 утра", "Пойти покушать", TaskStatus.DONE, subtask.getId());
         Epic epicChangeStatusEpic = new Epic("Встать в 6 утра", "Начать бегать", TaskStatus.IN_PROGRESS, subtask.getId());
         taskManager.createNewEpic(epic);
-        taskManager.upDateEpic(epic);
-        taskManager.print();
+        taskManager.updateEpic(epic);
         // ---------------------------------------
 //        taskManager.deleteTask(); // Очистка кода
-//        taskManager.print();
         // ---------------------------------------
 //        taskManager.deleteEpicID(4); // удаление по id
 //        taskManager.deleteSubTaskID(1);
 //        taskManager.deleteSubTaskID(3);
-//        taskManager.print();
         // ---------------------------------------
 //          taskManager.upDateEpic(epicUpDate); // Обновление
 //          taskManager.updateSubTask(subTaskUpDate);
 //          taskManager.updateTask(taskUpDate);
-//          taskManager.print();
         // ---------------------------------------
 //           taskManager.printTaskForEpic(epicUpDate);
-//           taskManager.print();
         // ---------------------------------------
 //        taskManager.changeStatusEpic(epicChangeStatusEpic);
-//        taskManager.print();
-        // ---------------------------------------
+//          ---------------------------------------
 
 
 
