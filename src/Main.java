@@ -1,8 +1,8 @@
-import com.yandex.practicum.Models.Epic;
-import com.yandex.practicum.Models.SubTask;
-import com.yandex.practicum.Models.TaskStatus;
-import com.yandex.practicum.Models.Task;
-import com.yandex.practicum.Service.TaskManager;
+import com.yandex.practicum.models.Epic;
+import com.yandex.practicum.models.SubTask;
+import com.yandex.practicum.models.TaskStatus;
+import com.yandex.practicum.models.Task;
+import com.yandex.practicum.service.TaskManager;
 
 public class Main {
 

@@ -1,11 +1,11 @@
-package com.yandex.practicum.Models;
+package com.yandex.practicum.models;
 
 import java.util.Objects;
 
 public class Task {
     private String title;
     private String description;
-    protected int id;
+    private int id;
     private TaskStatus status;
 
     public Task(String newName, String newDescription, TaskStatus newStatus, int id) {
@@ -68,12 +68,10 @@ public class Task {
 
         Task task = (Task) o;
 
-        if (id != task.id && !Objects.equals(title, task.title)
-                && !Objects.equals(description, task.description)
-                && !Objects.equals(status, task.status)) {
-            return false;
-        }
-        return status == task.status;
+        return id == task.id
+                && Objects.equals(title, task.title)
+                && Objects.equals(description, task.description)
+                && Objects.equals(status, task.status);
     }
 
     @Override

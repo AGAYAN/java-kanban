@@ -1,19 +1,19 @@
-package com.yandex.practicum.Models;
+package com.yandex.practicum.models;
 
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private ArrayList<Integer> subTaskIds;
 
-    public Epic(String newName, String newDescription, TaskStatus status, int id) {
-        super(newName, newDescription, status, id);
+    public Epic(String name, String description, TaskStatus status, int id) {
+        super(name, description, status, id);
     }
 
     public ArrayList<Integer> getSubTaskIds() {
         return subTaskIds;
     }
 
-    public void getIdSubTasks(ArrayList<Integer> idSubTasks) {
+    public void setSubTaskIds(ArrayList<Integer> idSubTasks) {
         this.subTaskIds = idSubTasks;
     }
 
@@ -24,11 +24,11 @@ public class Epic extends Task {
     @Override
     public String toString () {
         return "Epic{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", idSubtasks=" + getSubTaskIds() +
                 ", name='" + getTitle() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", idTask=" + id +
+                ", idTask=" + getId() +
                 ", status=" + getStatus() +
                 '}';
     }
