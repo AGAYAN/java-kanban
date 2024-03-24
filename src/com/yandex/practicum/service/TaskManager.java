@@ -39,6 +39,7 @@ public class TaskManager {
     public void createNewSubTask(SubTask subTask) {
         idSequence++;
         subTask.setId(idSequence);
+        epics.get(subTask.getEpicId()).addSubTask(idSequence);
         subTasks.put(idSequence, subTask);
     }
 
@@ -111,15 +112,15 @@ public class TaskManager {
         }
     }
 
-    public void deleteTasksByTask() {
+    public void deleteAllTasks() {
         tasks.clear();
     }
 
-    public void deleteTasksByEpic() {
+    public void deleteAllEpics() {
         epics.clear();
     }
 
-    public void deleteTasksBySubTask() {
+    public void deleteAllSubTasks() {
         subTasks.clear();
     }
 }
