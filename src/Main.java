@@ -2,6 +2,7 @@ import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.TaskStatus;
 import com.yandex.practicum.models.Task;
+import com.yandex.practicum.service.InMemoryTaskManager;
 import com.yandex.practicum.service.TaskManager;
 
 public class Main {
@@ -10,7 +11,7 @@ public class Main {
         Task task = new Task("Сходить магазин", "Купить помидоры", TaskStatus.DONE, 1);
         Task task1 = new Task("Сходить магазин техники", "Купить ноутбук", TaskStatus.DONE, 2);
         Task taskUpDate = new Task("Сходить магазин купить покушать", "Пирожок", TaskStatus.DONE, 3);
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
         taskManager.createNewTask(task);
         taskManager.createNewTask(task1);
 
