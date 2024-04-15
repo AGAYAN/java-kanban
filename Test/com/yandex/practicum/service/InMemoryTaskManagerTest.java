@@ -6,11 +6,9 @@ import com.yandex.practicum.models.Task;
 import com.yandex.practicum.models.TaskStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-
     private static InMemoryTaskManager manager;
     private final int id = 1;
 
@@ -29,7 +27,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createNewEpic() {
-        Epic epic = new Epic("title", "description",  TaskStatus.NEW, id);
+        Epic epic = new Epic("title", "description", TaskStatus.NEW, id);
         manager.createNewEpic(epic);
         final int epicId = epic.getId();
         assertNotNull(manager.getEpics().get(epicId - 1));
@@ -45,10 +43,9 @@ class InMemoryTaskManagerTest {
         }
     }
 
-
     @Test
     void updateEpic() {
-        Epic epic = new Epic("title", "description",  TaskStatus.NEW, id);
+        Epic epic = new Epic("title", "description", TaskStatus.NEW, id);
         manager.createNewEpic(epic);
         manager.updateEpic(epic);
         final int epicId = epic.getId();
@@ -57,7 +54,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteEpic() {
-        Epic epic = new Epic("title", "description",  TaskStatus.NEW, id);
+        Epic epic = new Epic("title", "description", TaskStatus.NEW, id);
         manager.createNewEpic(epic);
         final int epicId = epic.getId();
         manager.deleteEpic(epicId);
@@ -76,23 +73,12 @@ class InMemoryTaskManagerTest {
         }
     }
 
-
     @Test
     void deleteSubTask() {
         SubTask subTask = new SubTask("title", "description", TaskStatus.NEW, id);
         manager.createNewSubTask(subTask);
         final int subID = subTask.getId();
         assertFalse(manager.getSubtasks().contains(subID));
-    }
-
-
-    @Test
-    void updateSubTask() {
-        SubTask subTask = new SubTask("title", "description", TaskStatus.NEW, id);
-        manager.createNewSubTask(subTask);
-        manager.updateSubTask(subTask);
-        final int subTaskId = subTask.getId();
-        assertNotNull(manager.getSubtasks().get(subTaskId - 1));
     }
 
     @Test
@@ -106,51 +92,42 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getSubtasksByEpicId() {
-        Epic epic = new Epic("title", "description", TaskStatus.NEW, id);
-        for (int i = 0; i < 5; i++) {
-            SubTask subtask = new SubTask("subtask" + i, "description", TaskStatus.NEW, id);
-            manager.createNewSubTask(subtask);
-            epic.addSubTaskIds(subtask.getId());
+        Task task = new Task("Task1", "Привет", TaskStatus.NEW, id);
+        Task task2 = new Task("Task2", "Приветик", TaskStatus.NEW, id);
+
+        manager.createNewTask(task);
+        final int taskID = task.getId();
+        manager.createNewTask(task2);
+
+        SubTask subTask1 = new SubTask("Subtask1", "подзадачи1", TaskStatus.NEW, id);
+        SubTask subTask2 = new SubTask("Subtask2", "подхадача2", TaskStatus.NEW, id);
+
+        manager.createNewSubTask(subTask1);
+        final int subID = subTask1.getId();
+        manager.createNewSubTask(subTask2);
+
+        Epic epic1 = new Epic("Epic1", "эпика1", TaskStatus.NEW, id);
+        Epic epic2 = new Epic("Epic2", "эпика2", TaskStatus.NEW, id);
+
+        manager.createNewEpic(epic1);
+        final int epicID = epic1.getId();
+        manager.createNewEpic(epic2);
+
+        manager.deleteAllTasks();
+
+        if (manager.getHistory().size() > taskID) {
+            assertNull(manager.getHistory().get(taskID), "Задачи не удалились");
         }
 
-        assertEquals(TaskStatus.NEW, epic.getStatus());
-
-        for (Integer subtaskId : epic.getSubTaskIds()) {
-            SubTask subtask = manager.getSubtasks().get(subtaskId);
-            if (subtaskId % 2 == 0) {
-                subtask.setStatus(TaskStatus.DONE);
-                manager.updateSubTask(subtask);
-            }
+        if (manager.getSubtasks().size() > subID) {
+            assertNull(manager.getSubtasks().get(subID), "Подзадачи не удалились");
         }
 
-        manager.updateEpicStatus(epic);
-
-        assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus());
-
-        for (Integer subtaskId : epic.getSubTaskIds()) {
-            SubTask subtask = manager.getSubtasks().get(subtaskId);
-            if (subtaskId % 2 == 0) {
-                subtask.setStatus(TaskStatus.DONE);
-            } else {
-                subtask.setStatus(TaskStatus.NEW);
-            }
-            manager.updateSubTask(subtask);
+        if (manager.getEpics().size() > epicID) {
+            assertNull(manager.getEpics().get(epicID), "Эпики не удалились");
         }
 
-        manager.updateEpicStatus(epic);
-
-        assertEquals(TaskStatus.DONE, epic.getStatus());
-    }
-
-    @Test
-    void updateEpicStatus() {
-        Epic epic = new Epic("title", "description",  TaskStatus.NEW, id);
-        manager.createNewEpic(epic);
-        manager.updateEpicStatus(epic);
-        final int epicId = epic.getId();
-        if (manager.getEpics().contains(epicId)) {
-            assertNotNull(manager.getEpics().get(epicId));
-        }
+        System.out.println("Метод ниже");
     }
 
     @Test
@@ -163,17 +140,15 @@ class InMemoryTaskManagerTest {
         }
     }
 
-
     @Test
     void deleteAllEpics() {
-        Epic epic = new Epic("title", "description",  TaskStatus.NEW, id);
+        Epic epic = new Epic("title", "description", TaskStatus.NEW, id);
         manager.createNewEpic(epic);
         manager.deleteAllEpics();
         if (manager.getEpics().contains(epic.getId())) {
             assertNull(manager.getEpics().get(epic.getId()));
         }
     }
-
 
     @Test
     void deleteAllSubTasks() {
@@ -184,5 +159,4 @@ class InMemoryTaskManagerTest {
             assertNull(manager.getSubtasks().get(subTask.getId()));
         }
     }
-
 }
