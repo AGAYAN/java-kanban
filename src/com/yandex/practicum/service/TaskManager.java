@@ -5,6 +5,7 @@ import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     void createNewTask(Task task);
@@ -25,7 +26,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    ArrayList<SubTask> getSubtasksByEpicId(Integer epicId);
+    List<SubTask> getSubtasksByEpicId(Integer epicId);
 
     void updateEpicStatus(Epic epic);
 

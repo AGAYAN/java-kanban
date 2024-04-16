@@ -1,19 +1,19 @@
 package com.yandex.practicum.models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subTaskIds;
+    private List<Integer> subTaskIds;
 
     public Epic(String name, String description, TaskStatus status, int id) {
         super(name, description, status, id);
     }
 
-    public ArrayList<Integer> getSubTaskIds() {
+    public List<Integer> getSubTaskIds() {
         return subTaskIds;
     }
 
-    public void setSubTaskIds(ArrayList<Integer> idSubTasks) {
+    public void setSubTaskIds(List<Integer> idSubTasks) {
         this.subTaskIds = idSubTasks;
     }
 
