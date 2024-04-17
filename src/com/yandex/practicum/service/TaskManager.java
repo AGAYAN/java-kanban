@@ -35,4 +35,10 @@ public interface TaskManager {
     void deleteAllEpics();
 
     void deleteAllSubTasks();
+
+    Epic getEpicById(Integer epicId);
+
+    SubTask getSubTaskById(Integer subTaskId);
+
+    Task getTaskById(Integer epicId);
 }

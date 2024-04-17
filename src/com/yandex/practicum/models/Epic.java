@@ -13,15 +13,15 @@ public class Epic extends Task {
         return subTaskIds;
     }
 
-    public void setSubTaskIds(List<Integer> idSubTasks) {
-        this.subTaskIds = idSubTasks;
+    public void subTaskIds(List<Integer> subTaskIds) {
+        this.subTaskIds = subTaskIds;
     }
 
-    public void addSubTaskIds(Integer id) {
+    public void addSubTaskId(Integer id) {
          subTaskIds.add(id);
     }
 
-    public void deleteSubTask(Integer id) {
+    public void deleteSubTaskId(Integer id) {
         subTaskIds.remove(id);
     }
 
