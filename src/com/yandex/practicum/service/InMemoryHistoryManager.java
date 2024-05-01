@@ -3,7 +3,10 @@ package com.yandex.practicum.service;
 import com.yandex.practicum.models.Node;
 import com.yandex.practicum.models.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> history = new HashMap();
@@ -27,7 +30,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             return node;
         }
     }
-
 
     private void removeNode(Node node) {
         if (node == null) return;
