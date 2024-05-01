@@ -18,7 +18,7 @@ public class Epic extends Task {
     }
 
     public void addSubTaskId(Integer id) {
-         subTaskIds.add(id);
+        subTaskIds.add(id);
     }
 
     public void deleteSubTaskId(Integer id) {
@@ -26,7 +26,7 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return "Epic{" +
                 "id=" + getId() +
                 ", idSubtasks=" + getSubTaskIds() +
@@ -36,6 +36,4 @@ public class Epic extends Task {
                 ", status=" + getStatus() +
                 '}';
     }
-
-
 }

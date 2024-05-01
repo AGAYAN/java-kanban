@@ -2,6 +2,7 @@ package com.yandex.practicum.service;
 
 import com.yandex.practicum.models.Node;
 import com.yandex.practicum.models.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void removeNode(Node node) {
         final Node next = node.getNext();
         final Node prev = node.getPrev();
-        
+
         if (node == head) {
             head = next;
         }
@@ -55,7 +56,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(history.get(task.getId()));
             history.remove(task.getId());
         }
-        history.put(task.getId(),addLink(task));
+        history.put(task.getId(), addLink(task));
     }
 
     @Override
