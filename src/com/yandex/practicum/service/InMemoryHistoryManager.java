@@ -2,11 +2,13 @@ package com.yandex.practicum.service;
 
 import com.yandex.practicum.models.Node;
 import com.yandex.practicum.models.Task;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> history = new HashMap();
+    private final Map<Integer, Node> history = new HashMap<>();
     private Node head;
     private Node tail;
 
@@ -28,20 +30,21 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-
     private void removeNode(Node node) {
-        if (node == null) return;
+        final Node next = node.getNext();
+        final Node prev = node.getPrev();
+        
         if (node == head) {
-            head = node.getNext();
+            head = next;
         }
         if (node == tail) {
-            tail = node.getPrev();
+            tail = prev;
         }
-        if (node.getPrev()!= null) {
-            node.getPrev().setNext(node.getNext());
+        if (prev != null) {
+            prev.setNext(node.getNext());
         }
-        if (node.getNext()!= null) {
-            node.getNext().setPrev(node.getPrev());
+        if (next != null) {
+            next.setPrev(node.getPrev());
         }
     }
 
