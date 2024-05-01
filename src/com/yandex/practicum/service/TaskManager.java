@@ -28,8 +28,6 @@ public interface TaskManager {
 
     List<SubTask> getSubtasksByEpicId(Integer epicId);
 
-    void updateEpicStatus(Epic epic);
-
     void deleteAllTasks();
 
     void deleteAllEpics();
