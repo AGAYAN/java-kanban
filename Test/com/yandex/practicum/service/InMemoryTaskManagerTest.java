@@ -23,7 +23,7 @@ class InMemoryTaskManagerTest {
         Task task = new Task("title", "description", TaskStatus.NEW, id);
         manager.createNewTask(task);
         final int taskId = task.getId();
-        assertNotNull(manager.getHistory().get(taskId - 1));
+        assertEquals(task, manager.getTasks().get(taskId - 1));
     }
 
     @Test
@@ -32,16 +32,6 @@ class InMemoryTaskManagerTest {
         manager.createNewEpic(epic);
         final int epicId = epic.getId();
         assertNotNull(manager.getEpics().get(epicId - 1));
-    }
-
-    @Test
-    void createNewSubTask() {
-        SubTask subTask = new SubTask("title", "description", TaskStatus.NEW, id);
-        manager.createNewSubTask(subTask);
-        final int subTaskId = subTask.getId();
-        if (!manager.getSubtasks().isEmpty()) {
-            assertNotNull(manager.getSubtasks().get(subTaskId - 1));
-        }
     }
 
     @Test
@@ -75,53 +65,35 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void deleteSubTask() {
-        SubTask subTask = new SubTask("title", "description", TaskStatus.NEW, id);
-        manager.createNewSubTask(subTask);
-        final int subID = subTask.getId();
-        assertFalse(manager.getSubtasks().contains(subID));
-    }
-
-    @Test
     void updateTask() {
         Task task = new Task("title", "description", TaskStatus.NEW, id);
         manager.createNewTask(task);
         manager.updateTask(task);
         final int taskId = task.getId();
-        assertNotNull(manager.getHistory().get(taskId - 1));
+        assertNotNull(manager.getTasks().get(taskId - 1));
     }
 
     @Test
     void getSubtasksByEpicId() {
-        Task task = new Task("Task1", "Привет", TaskStatus.NEW, id);
-        Task task2 = new Task("Task2", "Приветик", TaskStatus.NEW, id);
+        Task task = new Task("Task1", "Привет", TaskStatus.NEW, 1);
+        Task task2 = new Task("Task2", "Приветик", TaskStatus.NEW, 2);
 
         manager.createNewTask(task);
         final int taskID = task.getId();
         manager.createNewTask(task2);
 
-        SubTask subTask1 = new SubTask("Subtask1", "подзадачи1", TaskStatus.NEW, id);
-        SubTask subTask2 = new SubTask("Subtask2", "подхадача2", TaskStatus.NEW, id);
-
-        manager.createNewSubTask(subTask1);
-        final int subID = subTask1.getId();
-        manager.createNewSubTask(subTask2);
-
-        Epic epic1 = new Epic("Epic1", "эпика1", TaskStatus.NEW, id);
-        Epic epic2 = new Epic("Epic2", "эпика2", TaskStatus.NEW, id);
+        Epic epic1 = new Epic("Epic1", "эпика1", TaskStatus.NEW, 3);
+        Epic epic2 = new Epic("Epic2", "эпика2", TaskStatus.NEW, 4);
 
         manager.createNewEpic(epic1);
         final int epicID = epic1.getId();
         manager.createNewEpic(epic2);
 
+
         manager.deleteAllTasks();
 
-        if (manager.getHistory().size() > taskID) {
-            assertNull(manager.getHistory().get(taskID), "Задачи не удалились");
-        }
-
-        if (manager.getSubtasks().size() > subID) {
-            assertNull(manager.getSubtasks().get(subID), "Подзадачи не удалились");
+        if (manager.getTasks().size() > taskID) {
+            assertNull(manager.getTasks().get(taskID), "Задачи не удалились");
         }
 
         if (manager.getEpics().size() > epicID) {
@@ -136,8 +108,8 @@ class InMemoryTaskManagerTest {
         Task task = new Task("title", "description", TaskStatus.NEW, id);
         manager.createNewTask(task);
         manager.deleteAllTasks();
-        if (manager.getHistory().contains(task.getId())) {
-            assertNull(manager.getHistory().get(task.getId()));
+        if (manager.getTasks().contains(task.getId())) {
+            assertNull(manager.getTasks().get(task.getId()));
         }
     }
 
@@ -151,13 +123,4 @@ class InMemoryTaskManagerTest {
         }
     }
 
-    @Test
-    void deleteAllSubTasks() {
-        SubTask subTask = new SubTask("title", "description", TaskStatus.NEW, id);
-        manager.createNewSubTask(subTask);
-        manager.deleteAllSubTasks();
-        if (manager.getSubtasks().contains(subTask.getId())) {
-            assertNull(manager.getSubtasks().get(subTask.getId()));
-        }
-    }
 }

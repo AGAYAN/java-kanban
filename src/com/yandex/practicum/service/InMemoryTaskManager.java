@@ -49,6 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(idSequence);
         Epic epic = epics.get(subTask.getEpicId());
         epic.addSubTaskId(idSequence);
+        epic.addSubTaskId(idSequence);
         subTasks.put(idSequence, subTask);
         updateEpicStatus(epic);
     }
@@ -169,7 +170,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public List<Task> getHistory() {
-        return historyManager.getHistory();
+        return new ArrayList<>(historyManager.getHistory());
+    }
+
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
     public List<Epic> getEpics() {
