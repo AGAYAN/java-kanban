@@ -1,4 +1,4 @@
-package com.yandex.practicum.service;
+package com.yandex.practicum.test;
 
 import org.junit.jupiter.api.Test;
 
