@@ -1,4 +1,4 @@
-package com.yandex.practicum.test;
+package com.yandex.practicum.service;
 
 public class Managers {
 
