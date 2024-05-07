@@ -145,10 +145,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubTasks() {
-        for (Integer subTaskId : subTasks.keySet()) {
-            subTasks.get(subTaskId).setStatus(TaskStatus.NEW);
+        for (Epic epic : epics.values()) {
+            epic.setStatus(TaskStatus.NEW);
         }
-        subTasks.clear();
+        epics.clear();
     }
 
     @Override
