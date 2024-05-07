@@ -148,6 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.setStatus(TaskStatus.NEW);
         }
+        subTasks.clear();
         epics.clear();
     }
 
