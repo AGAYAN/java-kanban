@@ -4,6 +4,7 @@ import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
 import com.yandex.practicum.models.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final Map<Integer, SubTask> subTasks;
 
+    private HistoryManager historyManager;
+
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
+        historyManager = Managers.getDefaultHistory();
     }
 
     @Override
@@ -44,12 +48,10 @@ public class InMemoryTaskManager implements TaskManager {
         idSequence++;
         subTask.setId(idSequence);
         Epic epic = epics.get(subTask.getEpicId());
-        if (epic != null) {
-            epic.addSubTaskIds(idSequence);
-            subTasks.put(idSequence, subTask);
-        } else {
-            System.out.println("Epic with ID " + subTask.getEpicId() + " not found.");
-        }
+        epic.addSubTaskId(idSequence);
+        epic.addSubTaskId(idSequence);
+        subTasks.put(idSequence, subTask);
+        updateEpicStatus(epic);
     }
 
     @Override
@@ -77,6 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubTask(Integer id) {
         SubTask subTask = subTasks.get(id);
         subTasks.remove(id);
+        updateSubTask(subTask);
     }
 
     @Override
@@ -92,9 +95,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getSubtasksByEpicId(Integer epicId) {
+    public List<SubTask> getSubtasksByEpicId(Integer epicId) {
         Epic epic = epics.get(epicId);
-        ArrayList<SubTask> subtasks = new ArrayList<>();
+        List<SubTask> subtasks = new ArrayList<>();
 
         if (epic == null) {
             return new ArrayList<>();
@@ -106,8 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
         return subtasks;
     }
 
-    @Override
-    public void updateEpicStatus(Epic epic) {
+    private void updateEpicStatus(Epic epic) {
         List<Integer> subtasks = epic.getSubTaskIds();
         int news = 0;
         int done = 0;
@@ -138,14 +140,41 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllEpics() {
         epics.clear();
+        subTasks.clear();
     }
 
     @Override
     public void deleteAllSubTasks() {
+        for (Epic epic : epics.values()) {
+            epic.setStatus(TaskStatus.NEW);
+        }
         subTasks.clear();
+        epics.clear();
+    }
+
+    @Override
+    public Epic getEpicById(Integer id) {
+        historyManager.add(epics.get(id));
+        return epics.get(id);
+    }
+
+    @Override
+    public SubTask getSubTaskById(Integer id) {
+        historyManager.add(subTasks.get(id));
+        return subTasks.get(id);
+    }
+
+    @Override
+    public Task getTaskById(Integer id) {
+        historyManager.add(tasks.get(id));
+        return tasks.get(id);
     }
 
     public List<Task> getHistory() {
+        return new ArrayList<>(historyManager.getHistory());
+    }
+
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 

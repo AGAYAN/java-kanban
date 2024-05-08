@@ -13,20 +13,20 @@ public class Epic extends Task {
         return subTaskIds;
     }
 
-    public void setSubTaskIds(List<Integer> idSubTasks) {
-        this.subTaskIds = idSubTasks;
+    public void setSubTaskIds(List<Integer> subTaskIds) {
+        this.subTaskIds = subTaskIds;
     }
 
-    public void addSubTaskIds(Integer id) {
-         subTaskIds.add(id);
+    public void addSubTaskId(Integer id) {
+        subTaskIds.add(id);
     }
 
-    public void deleteSubTask(Integer id) {
+    public void deleteSubTaskId(Integer id) {
         subTaskIds.remove(id);
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return "Epic{" +
                 "id=" + getId() +
                 ", idSubtasks=" + getSubTaskIds() +
@@ -36,6 +36,4 @@ public class Epic extends Task {
                 ", status=" + getStatus() +
                 '}';
     }
-
-
 }

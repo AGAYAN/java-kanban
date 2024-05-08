@@ -4,7 +4,6 @@ import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -28,11 +27,15 @@ public interface TaskManager {
 
     List<SubTask> getSubtasksByEpicId(Integer epicId);
 
-    void updateEpicStatus(Epic epic);
-
     void deleteAllTasks();
 
     void deleteAllEpics();
 
     void deleteAllSubTasks();
+
+    Epic getEpicById(Integer epicId);
+
+    SubTask getSubTaskById(Integer subTaskId);
+
+    Task getTaskById(Integer epicId);
 }

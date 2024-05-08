@@ -1,4 +1,4 @@
-package com.yandex.practicum.service;
+package com.yandex.practicum;
 
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
