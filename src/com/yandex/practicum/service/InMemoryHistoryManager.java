@@ -1,5 +1,6 @@
 package com.yandex.practicum.service;
 
+import com.yandex.practicum.interfaces.HistoryManager;
 import com.yandex.practicum.models.Task;
 
 import java.util.ArrayList;

@@ -1,9 +1,11 @@
 package com.yandex.practicum.service;
 
+import com.yandex.practicum.interfaces.HistoryManager;
+import com.yandex.practicum.interfaces.TaskManager;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
-import com.yandex.practicum.models.TaskStatus;
+import com.yandex.practicum.enums.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +16,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int idSequence;
 
-    private final Map<Integer, Task> tasks;
+    protected final Map<Integer, Task> tasks;
 
-    private final Map<Integer, Epic> epics;
+    protected final Map<Integer, Epic> epics;
 
-    private final Map<Integer, SubTask> subTasks;
+    protected final Map<Integer, SubTask> subTasks;
 
     private HistoryManager historyManager;
 

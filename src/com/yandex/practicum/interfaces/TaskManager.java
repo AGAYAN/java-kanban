@@ -1,4 +1,4 @@
-package com.yandex.practicum.service;
+package com.yandex.practicum.interfaces;
 
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
@@ -38,4 +38,10 @@ public interface TaskManager {
     SubTask getSubTaskById(Integer subTaskId);
 
     Task getTaskById(Integer epicId);
+
+    List<Epic> getEpics();
+
+    List<SubTask> getSubtasks();
+
+    List<Task> getTasks();
 }

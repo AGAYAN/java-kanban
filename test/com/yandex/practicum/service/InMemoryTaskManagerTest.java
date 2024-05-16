@@ -2,7 +2,7 @@ package com.yandex.practicum.service;
 
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.Task;
-import com.yandex.practicum.models.TaskStatus;
+import com.yandex.practicum.enums.TaskStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

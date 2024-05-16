@@ -1,5 +1,7 @@
 package com.yandex.practicum.models;
 
+import com.yandex.practicum.enums.TaskStatus;
+
 import java.util.List;
 
 public class Epic extends Task {

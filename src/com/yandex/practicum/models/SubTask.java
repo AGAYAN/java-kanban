@@ -1,5 +1,7 @@
 package com.yandex.practicum.models;
 
+import com.yandex.practicum.enums.TaskStatus;
+
 public class SubTask extends Task {
     private int epicId;
 
