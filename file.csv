@@ -1,1 +1,1 @@
-Task{title='title', description='description', id=1, status=NEW}Task{title='Тут будет тип Task', description='Какое то описание', id=2, status=NEW}Epic{id=3, idSubtasks=null, name='Tут будет тип Epic', description='Какое то описание', idTask=3, status=NEW}
+Task{title='title', description='description', id=1, status=NEW}

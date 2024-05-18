@@ -1,20 +1,21 @@
 package com.yandex.practicum.service;
 
-
 import com.yandex.practicum.enums.TaskStatus;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
-
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
-    public FileBackedTaskManager(File file) throws FileNotFoundException {
+    public FileBackedTaskManager(File file) {
         this.file = file;
         loadFromFile();
     }
@@ -22,26 +23,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() {
         try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
             for (Task task : tasks.values()) {
-                writer.write(task.toString());
+                writer.write(task.toString() + "\n");
             }
             for (Epic epic : epics.values()) {
-                writer.write(epic.toString());
+                writer.write(epic.toString() + "\n");
             }
             for (SubTask subTask : subTasks.values()) {
-                writer.write(subTask.toString());
+                writer.write(subTask.toString() + "\n");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new CustomFileWriteException("Ошибка при записи в файл", e);
         }
     }
 
-    private void loadFromFile() throws FileNotFoundException {
+    private void loadFromFile() throws CustomFileWriteException { // Простите у меня тут не получилось бы с static он у меня жалуется и не записывает данные с тестов
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 Object object = parseObject(line);
-                if (object instanceof SubTask) { // поменять местами
+                if (object instanceof SubTask) {
                     super.subTasks.put(((SubTask) object).getId(), (SubTask) object);
                 } else if (object instanceof Epic) {
                     super.epics.put(((Epic) object).getId(), (Epic) object);
@@ -50,14 +51,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
             bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("Файл не найден");
+        } catch (IOException e) {
+            throw new CustomFileWriteException("Файл не найден", e);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Object parseObject(String line) throws Exception {
+    private static Object parseObject(String line) throws Exception {
         String[] parts = line.split(",");
         String objectType = parts[0].trim();
         switch (objectType) {
