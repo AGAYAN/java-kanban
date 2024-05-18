@@ -36,7 +36,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private void loadFromFile() throws CustomFileWriteException { // Простите у меня тут не получилось бы с static он у меня жалуется и не записывает данные с тестов
+    private void loadFromFile() throws CustomFileWriteException {  // Простите у меня тут не получилось бы с static он у меня жалуется и не записывает данные с тестов
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
