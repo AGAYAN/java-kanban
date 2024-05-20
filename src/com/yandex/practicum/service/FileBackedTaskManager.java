@@ -17,48 +17,59 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
         this.file = file;
-        loadFromFile();
+        loadFromFile(file, this);
     }
 
     private void save() {
         try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
             for (Task task : tasks.values()) {
-                writer.write(task.toString() + "\n");
+                writer.write(toStringTask(task) + "\n");
             }
             for (Epic epic : epics.values()) {
-                writer.write(epic.toString() + "\n");
+                writer.write(toStringEpic(epic) + "\n");
             }
             for (SubTask subTask : subTasks.values()) {
-                writer.write(subTask.toString() + "\n");
+                writer.write(toStringSubTask(subTask) + "\n");
             }
         } catch (IOException e) {
-            throw new CustomFileWriteException("Ошибка при записи в файл", e);
+            throw new ManagerSaveException("Ошибка при записи в файл", e);
         }
     }
 
-    private void loadFromFile() throws CustomFileWriteException {  // Простите у меня тут не получилось бы с static он у меня жалуется и не записывает данные с тестов
+    public String toStringTask(Task task) {
+        return task.getId() + "," + task.getTitle() + "," + task.getDescription() + "," + task.getStatus();
+    }
+
+    public String toStringEpic(Epic epic) {
+        return epic.getId() + "," + epic.getTitle() + "," + epic.getDescription() + "," + epic.getStatus();
+    }
+
+    public String toStringSubTask(SubTask subTask) {
+        return subTask.getId() + "," + subTask.getEpicId() + "," + subTask.getTitle() + "," + subTask.getDescription() + "," + subTask.getStatus();
+    }
+
+    public static void loadFromFile(File file, FileBackedTaskManager taskManager) throws ManagerSaveException {
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 Object object = parseObject(line);
                 if (object instanceof SubTask) {
-                    super.subTasks.put(((SubTask) object).getId(), (SubTask) object);
+                    taskManager.subTasks.put(((SubTask) object).getId(), (SubTask) object);
                 } else if (object instanceof Epic) {
-                    super.epics.put(((Epic) object).getId(), (Epic) object);
+                    taskManager.epics.put(((Epic) object).getId(), (Epic) object);
                 } else {
-                    super.tasks.put(((Task) object).getId(), (Task) object);
+                    taskManager.tasks.put(((Task) object).getId(), (Task) object);
                 }
             }
             bufferedReader.close();
         } catch (IOException e) {
-            throw new CustomFileWriteException("Файл не найден", e);
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new ManagerSaveException("Файл не найден", e);
         }
     }
 
-    private static Object parseObject(String line) throws Exception {
+
+    private static Object parseObject(String line) throws IOException {
         String[] parts = line.split(",");
         String objectType = parts[0].trim();
         switch (objectType) {
@@ -75,7 +86,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         TaskStatus.valueOf(parts[3].trim()),
                         Integer.parseInt(parts[4].trim()));
             default:
-                throw new Exception("Неизвестный тип объекта");
+                throw new IOException("Неизвестный тип объекта");
         }
     }
 

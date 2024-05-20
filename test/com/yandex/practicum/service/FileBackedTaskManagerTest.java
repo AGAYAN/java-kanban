@@ -7,6 +7,8 @@ import com.yandex.practicum.models.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.io.File;
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,12 +19,16 @@ class FileBackedTaskManagerTest {
     @BeforeAll
     public static void setup() {
         String filename = "file.csv";
-        try {
-            File file = new File(filename);
-            taskManager = new FileBackedTaskManager(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        File file = new File(filename);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        taskManager = new FileBackedTaskManager(file);
+        FileBackedTaskManager.loadFromFile(file, (FileBackedTaskManager) taskManager);
     }
 
     @Test
