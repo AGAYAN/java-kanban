@@ -32,7 +32,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toStringSubTask(subTask) + "\n");
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при записи в файл", e);
+            throw new ManagerSaveException("Ошибка при записи в файла", e);
         }
     }
 
