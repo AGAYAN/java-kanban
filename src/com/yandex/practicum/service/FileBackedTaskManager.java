@@ -51,7 +51,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return subTask.getId() + "," + subTask.getEpicId() + "," + subTask.getTitle() + "," + subTask.getDescription() + "," + subTask.getStatus();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile(File file) {
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
@@ -67,7 +67,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             bufferedReader.close();
         } catch (IOException e) {
-            throw new ManagerSaveException("Файл не найден", e);
+            throw new ManagerSaveException("file not found", e);
         }
         return (FileBackedTaskManager) taskManager;
     }
