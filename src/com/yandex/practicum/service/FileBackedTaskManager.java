@@ -1,6 +1,7 @@
 package com.yandex.practicum.service;
 
 import com.yandex.practicum.enums.TaskStatus;
+import com.yandex.practicum.interfaces.TaskManager;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
@@ -15,9 +16,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
+    private static TaskManager taskManager;
+
     public FileBackedTaskManager(File file) {
         this.file = file;
-        loadFromFile(file, this);
+        loadFromFile(file);
     }
 
     private void save() {
@@ -48,24 +51,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return subTask.getId() + "," + subTask.getEpicId() + "," + subTask.getTitle() + "," + subTask.getDescription() + "," + subTask.getStatus();
     }
 
-    public static void loadFromFile(File file, FileBackedTaskManager taskManager) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 Object object = parseObject(line);
                 if (object instanceof SubTask) {
-                    taskManager.subTasks.put(((SubTask) object).getId(), (SubTask) object);
+                    taskManager.getSubtasks().add(((SubTask) object).getId(), (SubTask) object);
                 } else if (object instanceof Epic) {
-                    taskManager.epics.put(((Epic) object).getId(), (Epic) object);
+                    taskManager.getEpics().add(((Epic) object).getId(), (Epic) object);
                 } else {
-                    taskManager.tasks.put(((Task) object).getId(), (Task) object);
+                    taskManager.getTasks().add(((Task) object).getId(), (Task) object);
                 }
             }
             bufferedReader.close();
         } catch (IOException e) {
             throw new ManagerSaveException("Файл не найден", e);
         }
+        return (FileBackedTaskManager) taskManager;
     }
 
 

@@ -28,7 +28,7 @@ class FileBackedTaskManagerTest {
             }
         }
         taskManager = new FileBackedTaskManager(file);
-        FileBackedTaskManager.loadFromFile(file, (FileBackedTaskManager) taskManager);
+        FileBackedTaskManager.loadFromFile(file);
     }
 
     @Test
