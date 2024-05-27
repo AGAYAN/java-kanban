@@ -7,10 +7,8 @@ import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
 import com.yandex.practicum.enums.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -24,6 +22,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private HistoryManager historyManager;
 
+    public TreeSet<Task> getPrioritizedTasks() {
+        return new TreeSet<>(tasks.values());
+    }
+
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         epics = new HashMap<>();
@@ -31,11 +33,55 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager = Managers.getDefaultHistory();
     }
 
+    public LocalDateTime getEndTime(Task task) {
+        if  (task instanceof Epic) {
+            LocalDateTime time = subTasks.get(((Epic) task).getSubTaskIds().get(0)).getStartTime();
+            ((Epic) task).getSubTaskIds().stream()
+                    .map(i -> subTasks.get(i).getDuration())
+                    .filter(Objects::nonNull)
+                    .peek(i -> time.plus(i));
+
+            return time;
+        }
+        if(task.getStartTime() != null) {
+            return task.getStartTime().plus(task.getDuration());
+        }
+        return null;
+    }
+
+    private void changeStatusByEpic(Epic epic) {
+        if (epic.getSubtaskByEpic().isEmpty()) {
+            epic.setStatus(TaskStatus.NEW);
+        } else {
+            int countIsNew = 0;
+            int countIsProcess = 0;
+            List<Integer> temp = epic.getSubtaskByEpic();
+            for (Integer i : temp) {
+                if (subTasks.get(i).getStatus().equals(TaskStatus.NEW)) {
+                    countIsNew++;
+                } else if (subTasks.get(i).getStatus().equals(TaskStatus.DONE)) {
+                    countIsProcess++;
+                }
+                if (countIsProcess == temp.size()) {
+                    epic.setStatus(TaskStatus.DONE);
+                } else if (countIsNew == temp.size()) {
+                    epic.setStatus(TaskStatus.NEW);
+                }
+            }
+        }
+        epic.setStatus(TaskStatus.IN_PROGRESS);
+    }
+
+    public boolean checkTime(Task task) {
+        return getEndTime(task) != null && getEndTime(task).isBefore(LocalDateTime.now());
+    }
+
     @Override
     public void createNewTask(Task task) {
         idSequence++;
         task.setId(idSequence);
         tasks.put(idSequence, task);
+
     }
 
     @Override

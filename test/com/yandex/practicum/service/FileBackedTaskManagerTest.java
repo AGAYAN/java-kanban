@@ -8,11 +8,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     private static TaskManager taskManager;
 
@@ -33,7 +37,22 @@ class FileBackedTaskManagerTest {
 
     @Test
     public void createAndSaveTaskFromFile() {
-        Task task = new Task("title", "description", TaskStatus.NEW, 1);
+        Task task = new Task("qwfq", "qwfqwf", TaskStatus.NEW, 1);
+        LocalDate data = LocalDate.of(2004, 4, 15);
+        LocalTime time = LocalTime.now();
+        LocalDateTime dataTime = LocalDateTime.of(data, time);
+        Duration duration = Duration.ofMinutes(12_545_655);
+        task.setStartTime(dataTime);
+        task.setDuration(duration);
+
+        taskManager.createNewTask(task);
+
+        assertNotNull(taskManager.getTasks());
+    }
+
+    @Test
+    public void createAndSaveEpicFromFile() {
+        Epic task = new Epic("title", "description", TaskStatus.NEW, 1);
         taskManager.createNewTask(task);
         assertNotNull(taskManager.getTaskById(1));
     }

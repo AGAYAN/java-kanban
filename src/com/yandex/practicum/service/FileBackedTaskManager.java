@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -76,19 +78,37 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Object parseObject(String line) throws IOException {
         String[] parts = line.split(",");
         String objectType = parts[0].trim();
+        int id = Integer.parseInt(parts[1].trim());
+        String title = parts[2].trim();
+        String description = parts[3].trim();
+        TaskStatus status = TaskStatus.valueOf(parts[4].trim());
+
         switch (objectType) {
             case "Task":
-                return new Task(parts[1].trim(), parts[2].trim(),
-                        TaskStatus.valueOf(parts[3].trim()),
-                        Integer.parseInt(parts[4].trim()));
+                Task task = new Task(title, description, status, id);
+                if (parts.length > 5) {
+                    LocalDateTime startTime = LocalDateTime.parse(parts[5].trim());
+                    task.setStartTime(startTime);
+                    if (parts.length > 6) {
+                        LocalDateTime endTime = LocalDateTime.parse(parts[6].trim());
+                        task.setDuration(Duration.between(startTime, endTime));
+                    }
+                }
+                return task;
             case "Epic":
-                return new Epic(parts[1].trim(), parts[2].trim(),
-                        TaskStatus.valueOf(parts[3].trim()),
-                        Integer.parseInt(parts[4].trim()));
-            case "SubTask":
-                return new SubTask(parts[1].trim(), parts[2].trim(),
-                        TaskStatus.valueOf(parts[3].trim()),
-                        Integer.parseInt(parts[4].trim()));
+                return new Epic(title, description, status, id);
+            case "Subtask":
+                int epicId = Integer.parseInt(parts[5].trim());
+                SubTask subTask = new SubTask(title, description, status, epicId);
+                if (parts.length > 6) {
+                    LocalDateTime startTime = LocalDateTime.parse(parts[6].trim());
+                    subTask.setStartTime(startTime);
+                    if (parts.length > 7) {
+                        LocalDateTime endTime = LocalDateTime.parse(parts[7].trim());
+                        subTask.setDuration(Duration.between(startTime, endTime));
+                    }
+                }
+                return subTask;
             default:
                 throw new IOException("Неизвестный тип объекта");
         }

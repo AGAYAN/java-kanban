@@ -2,6 +2,9 @@ package com.yandex.practicum.models;
 
 import com.yandex.practicum.enums.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private int epicId;
 
@@ -25,5 +28,9 @@ public class SubTask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
                 '}';
+    }
+
+    public LocalDateTime getEndTime() {
+        return super.getStartTime().plus(Duration.ofMinutes(super.getDuration().getSeconds()));
     }
 }
