@@ -34,7 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public LocalDateTime getEndTime(Task task) {
-        if  (task instanceof Epic) {
+        if (task instanceof Epic) {
             LocalDateTime time = subTasks.get(((Epic) task).getSubTaskIds().get(0)).getStartTime();
             ((Epic) task).getSubTaskIds().stream()
                     .map(i -> subTasks.get(i).getDuration())
@@ -42,8 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
                     .peek(i -> time.plus(i));
 
             return time;
-        }
-        if(task.getStartTime() != null) {
+        } else if (task.getStartTime() != null) {
             return task.getStartTime().plus(task.getDuration());
         }
         return null;
@@ -81,7 +80,6 @@ public class InMemoryTaskManager implements TaskManager {
         idSequence++;
         task.setId(idSequence);
         tasks.put(idSequence, task);
-
     }
 
     @Override
