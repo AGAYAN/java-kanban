@@ -5,6 +5,7 @@ import com.yandex.practicum.interfaces.TaskManager;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,10 +19,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
-    private static TaskManager taskManager;
+    private TaskManager taskManager;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
+        taskManager = this; // Инициализация taskManager здесь
         loadFromFile(file);
     }
 
@@ -53,66 +55,72 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return subTask.getId() + "," + subTask.getEpicId() + "," + subTask.getTitle() + "," + subTask.getDescription() + "," + subTask.getStatus();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public void loadFromFile(File file) {
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             BufferedReader bufferedReader = new BufferedReader(reader);
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 Object object = parseObject(line);
-                if (object instanceof SubTask) {
-                    taskManager.getSubtasks().add(((SubTask) object).getId(), (SubTask) object);
-                } else if (object instanceof Epic) {
-                    taskManager.getEpics().add(((Epic) object).getId(), (Epic) object);
-                } else {
-                    taskManager.getTasks().add(((Task) object).getId(), (Task) object);
+                if (object != null) {
+                    if (object instanceof SubTask) {
+                        taskManager.getSubtasks().add(((SubTask) object).getId(), (SubTask) object);
+                    } else if (object instanceof Epic) {
+                        taskManager.getEpics().add(((Epic) object).getId(), (Epic) object);
+                    } else if (object instanceof Task) {
+                        taskManager.getTasks().add(((Task) object).getId(), (Task) object);
+                    }
                 }
             }
-            bufferedReader.close();
         } catch (IOException e) {
             throw new ManagerSaveException("file not found", e);
         }
-        return (FileBackedTaskManager) taskManager;
     }
-
 
     private static Object parseObject(String line) throws IOException {
         String[] parts = line.split(",");
         String objectType = parts[0].trim();
-        int id = Integer.parseInt(parts[1].trim());
-        String title = parts[2].trim();
-        String description = parts[3].trim();
-        TaskStatus status = TaskStatus.valueOf(parts[4].trim());
 
-        switch (objectType) {
-            case "Task":
-                Task task = new Task(title, description, status, id);
-                if (parts.length > 5) {
-                    LocalDateTime startTime = LocalDateTime.parse(parts[5].trim());
-                    task.setStartTime(startTime);
+        try {
+            int id = Integer.parseInt(parts[1].trim());
+            String title = parts[2].trim();
+            String description = parts[3].trim();
+            TaskStatus status = TaskStatus.valueOf(parts[4].trim());
+
+            switch (objectType) {
+                case "Task":
+                    Task task = new Task(title, description, status, id);
+                    if (parts.length > 5) {
+                        LocalDateTime startTime = LocalDateTime.parse(parts[5].trim());
+                        task.setStartTime(startTime);
+                        if (parts.length > 6) {
+                            LocalDateTime endTime = LocalDateTime.parse(parts[6].trim());
+                            task.setDuration(Duration.between(startTime, endTime));
+                        }
+                    }
+                    return task;
+                case "Epic":
+                    return new Epic(title, description, status, id);
+                case "Subtask":
+                    int epicId = Integer.parseInt(parts[5].trim());
+                    SubTask subTask = new SubTask(title, description, status, epicId);
                     if (parts.length > 6) {
-                        LocalDateTime endTime = LocalDateTime.parse(parts[6].trim());
-                        task.setDuration(Duration.between(startTime, endTime));
+                        LocalDateTime startTime = LocalDateTime.parse(parts[6].trim());
+                        subTask.setStartTime(startTime);
+                        if (parts.length > 7) {
+                            LocalDateTime endTime = LocalDateTime.parse(parts[7].trim());
+                            subTask.setDuration(Duration.between(startTime, endTime));
+                        }
                     }
-                }
-                return task;
-            case "Epic":
-                return new Epic(title, description, status, id);
-            case "Subtask":
-                int epicId = Integer.parseInt(parts[5].trim());
-                SubTask subTask = new SubTask(title, description, status, epicId);
-                if (parts.length > 6) {
-                    LocalDateTime startTime = LocalDateTime.parse(parts[6].trim());
-                    subTask.setStartTime(startTime);
-                    if (parts.length > 7) {
-                        LocalDateTime endTime = LocalDateTime.parse(parts[7].trim());
-                        subTask.setDuration(Duration.between(startTime, endTime));
-                    }
-                }
-                return subTask;
-            default:
-                throw new IOException("Неизвестный тип объекта");
+                    return subTask;
+                default:
+                    throw new IOException("Неизвестный тип объекта");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка при парсинге строки: " + line);
+            return null;
         }
     }
+
 
     @Override
     public void createNewTask(Task task) {

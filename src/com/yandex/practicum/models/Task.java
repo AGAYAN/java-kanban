@@ -11,7 +11,7 @@ public class Task {
     private String description;
     private int id;
     private TaskStatus status;
-    private LocalDateTime startTime;
+    protected LocalDateTime startTime;
     private Duration duration;
 
     public Task(String title, String description, TaskStatus status, int id) {

@@ -14,16 +14,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     private static TaskManager taskManager;
 
+    private static TaskManager taskManager2;
+
+    public static String filename = "file.csv";
+
+
     @BeforeAll
     public static void setup() {
-        String filename = "file.csv";
         File file = new File(filename);
         if (!file.exists()) {
             try {
@@ -33,7 +36,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             }
         }
         taskManager = new FileBackedTaskManager(file);
-        FileBackedTaskManager.loadFromFile(file);
+        taskManager2 = new FileBackedTaskManager(file);
     }
 
     @Test
@@ -41,7 +44,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         Task task = new Task("qwfq", "qwfqwf", TaskStatus.NEW, 1);
         LocalDate data = LocalDate.of(2004, 4, 15);
         LocalTime time = LocalTime.now();
-        LocalDateTime dataTime = LocalDateTime.of(data, time);
+        LocalDateTime dataTime = LocalDateTime.now();
         Duration duration = Duration.ofMinutes(12_545_655);
         task.setStartTime(dataTime);
         task.setDuration(duration);
@@ -49,6 +52,15 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.createNewTask(task);
 
         assertNotNull(taskManager.getTasks());
+        assertEquals(1, taskManager.getTasks().size());
+
+        taskManager2.createNewTask(task);
+        assertNotNull(taskManager2.getTasks());
+        assertEquals(1, taskManager2.getTasks().size());
+        if (!taskManager2.getTasks().isEmpty()) {
+            Task loadedTask = taskManager2.getTasks().get(0);
+            assertEquals(task, loadedTask);
+        }
     }
 
     @Test
