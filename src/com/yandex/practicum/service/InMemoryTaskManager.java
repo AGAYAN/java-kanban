@@ -1,32 +1,84 @@
 package com.yandex.practicum.service;
 
+import com.yandex.practicum.interfaces.HistoryManager;
+import com.yandex.practicum.interfaces.TaskManager;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
-import com.yandex.practicum.models.TaskStatus;
+import com.yandex.practicum.enums.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeSet;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 public class InMemoryTaskManager implements TaskManager {
 
     private int idSequence;
-
-    private final Map<Integer, Task> tasks;
-
-    private final Map<Integer, Epic> epics;
-
-    private final Map<Integer, SubTask> subTasks;
-
+    protected final Map<Integer, Task> tasks;
+    protected final Map<Integer, Epic> epics;
+    protected final Map<Integer, SubTask> subTasks;
     private HistoryManager historyManager;
+    private TreeSet<Task> priority;
+    static Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        return new TreeSet<>(tasks.values());
+    }
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
+        priority = new TreeSet<>(comparator);
+    }
+
+    public LocalDateTime getEndTime(Task task) {
+        if (task instanceof Epic) {
+            LocalDateTime time = subTasks.get(((Epic) task).getSubTaskIds().get(0)).getStartTime();
+            ((Epic) task).getSubTaskIds().stream().map(i -> subTasks.get(i).getDuration()).filter(Objects::nonNull).peek(i -> time.plus(i));
+
+            return time;
+        } else if (task.getStartTime() != null) {
+            return task.getStartTime().plus(task.getDuration());
+        }
+        return null;
+    }
+
+    private void changeStatusByEpic(Epic epic) {
+        if (epic.getSubtaskByEpic().isEmpty()) {
+            epic.setStatus(TaskStatus.NEW);
+        } else {
+            int countIsNew = 0;
+            int countIsProcess = 0;
+            List<Integer> temp = epic.getSubtaskByEpic();
+            for (Integer i : temp) {
+                if (subTasks.get(i).getStatus().equals(TaskStatus.NEW)) {
+                    countIsNew++;
+                } else if (subTasks.get(i).getStatus().equals(TaskStatus.DONE)) {
+                    countIsProcess++;
+                }
+                if (countIsProcess == temp.size()) {
+                    epic.setStatus(TaskStatus.DONE);
+                } else if (countIsNew == temp.size()) {
+                    epic.setStatus(TaskStatus.NEW);
+                }
+            }
+        }
+        epic.setStatus(TaskStatus.IN_PROGRESS);
+    }
+
+    public boolean checkTime(Task task) {
+        return getEndTime(task) != null && getEndTime(task).isBefore(LocalDateTime.now());
+    }
+
+    public boolean checkStartTime(Task task) {
+        return task.getStartTime() != null;
     }
 
     @Override
@@ -34,6 +86,9 @@ public class InMemoryTaskManager implements TaskManager {
         idSequence++;
         task.setId(idSequence);
         tasks.put(idSequence, task);
+        if (checkStartTime(task) && checkTime(task)) {
+            priority.add(task);
+        }
     }
 
     @Override
@@ -78,7 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTask(Integer id) {
         SubTask subTask = subTasks.get(id);
-        subTasks.remove(id);
+        historyManager.remove(id);
         updateSubTask(subTask);
     }
 
@@ -185,4 +240,5 @@ public class InMemoryTaskManager implements TaskManager {
     public List<SubTask> getSubtasks() {
         return new ArrayList<>(subTasks.values());
     }
+
 }

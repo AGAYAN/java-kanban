@@ -2,10 +2,10 @@ package com.yandex.practicum;
 
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
-import com.yandex.practicum.models.TaskStatus;
+import com.yandex.practicum.enums.TaskStatus;
 import com.yandex.practicum.models.Task;
 import com.yandex.practicum.service.InMemoryTaskManager;
-import com.yandex.practicum.service.TaskManager;
+import com.yandex.practicum.interfaces.TaskManager;
 
 public class Main {
 
