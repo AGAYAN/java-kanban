@@ -5,6 +5,7 @@ import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     void createNewTask(Task task);
@@ -14,6 +15,12 @@ public interface TaskManager {
     void createNewSubTask(SubTask subTask);
 
     void updateEpic(Epic epic);
+
+    Object deleteEpicServer(Integer id);
+
+    Object deleteTaskServer(Integer id);
+
+    Object deleteSubTaskServer(Integer id);
 
     void deleteEpic(Integer id);
 
@@ -44,4 +51,10 @@ public interface TaskManager {
     List<SubTask> getSubtasks();
 
     List<Task> getTasks();
+
+    List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    List<SubTask> getListSubtask();
 }
