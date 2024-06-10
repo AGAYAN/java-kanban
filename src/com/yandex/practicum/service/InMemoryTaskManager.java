@@ -1,20 +1,14 @@
 package com.yandex.practicum.service;
 
+import com.yandex.practicum.enums.TaskStatus;
 import com.yandex.practicum.interfaces.HistoryManager;
 import com.yandex.practicum.interfaces.TaskManager;
 import com.yandex.practicum.models.Epic;
 import com.yandex.practicum.models.SubTask;
 import com.yandex.practicum.models.Task;
-import com.yandex.practicum.enums.TaskStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -225,6 +219,24 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks.get(id);
     }
 
+    @Override
+    public Object deleteEpicServer(Integer id) {
+        return epics.remove(id);
+    }
+
+    @Override
+    public Object deleteSubTaskServer(Integer id) {
+        SubTask subTask = subTasks.get(id);
+        historyManager.remove(id);
+        updateSubTask(subTask);
+        return subTask;
+    }
+
+    @Override
+    public Object deleteTaskServer(Integer id) {
+        return tasks.remove(id);
+    }
+
     public List<Task> getHistory() {
         return new ArrayList<>(historyManager.getHistory());
     }
@@ -241,4 +253,8 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subTasks.values());
     }
 
+    @Override
+    public List<SubTask> getListSubtask() {
+        return new ArrayList<>(subTasks.values());
+    }
 }
